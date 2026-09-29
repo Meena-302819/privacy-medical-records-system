@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Verification</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .otp-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .otp-card {
+            width: 100%;
+            max-width: 430px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.10);
+            text-align: center;
+        }
+
+        .otp-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef6ff;
+            font-size: 30px;
+        }
+
+        .otp-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .otp-card p {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .otp-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d8dee8;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .otp-input:focus {
+            border-color: #2563eb;
+        }
+
+        .verify-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .verify-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .resend-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="otp-container">
+
+    <div class="otp-card">
+
+        <div class="otp-icon">
+            🔐
+        </div>
+
+        <h2>Verify Your Login</h2>
+
+        <p>
+            A verification code has been sent
+            to your registered email address.
+        </p>
+
+        <form method="POST"
+              action="{{ url_for('verify_otp') }}">
+
+            <input
+                type="text"
+                name="otp"
+                class="otp-input"
+                placeholder="000000"
+                maxlength="6"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                required
+                autofocus
+            >
+
+            <button
+                type="submit"
+                class="verify-btn">
+                Verify Code
+            </button>
+
+        </form>
+
+        <a
+            href="{{ url_for('resend_otp') }}"
+            class="resend-link">
+            Resend Code
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

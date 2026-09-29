@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sign In | Medical Records System</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/login.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="login-page">
+
+
+    <!-- ==================================================
+         LEFT SIDE
+         ================================================== -->
+
+    <section class="login-visual">
+
+        <div class="visual-content">
+
+
+            <!-- Logo -->
+
+            <div class="medical-logo">
+
+                <div class="logo-icon">
+
+                    <i class="fa-solid fa-heart-pulse"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>MedCare</strong>
+
+                    <span>Records System</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Main text -->
+
+            <div class="visual-main">
+
+                <div class="small-label">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    Medical information management
+
+                </div>
+
+
+                <h1>
+
+                    Better care begins
+                    with better records.
+
+                </h1>
+
+
+                <p>
+
+                    Manage patient information and medical
+                    records through one secure and organized
+                    platform.
+
+                </p>
+
+            </div>
+
+
+            <!-- Feature items -->
+
+            <div class="visual-features">
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Controlled access
+                        </strong>
+
+                        <span>
+                            Information is available according
+                            to user permissions.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+
+                        <i class="fa-solid fa-file-medical"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Organized records
+                        </strong>
+
+                        <span>
+                            Keep patient history and clinical
+                            information in one place.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feature-item">
+
+                    <div class="feature-icon">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Quick search
+                        </strong>
+
+                        <span>
+                            Find relevant medical information
+                            when it is needed.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="visual-footer">
+
+                <i class="fa-solid fa-shield-heart"></i>
+
+                Designed for authorized medical staff
+
+            </div>
+
+        </div>
+
+
+        <!-- Decorative shapes -->
+
+        <div class="decor decor-one"></div>
+
+        <div class="decor decor-two"></div>
+
+        <div class="decor decor-three"></div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         RIGHT SIDE
+         ================================================== -->
+
+    <section class="login-form-section">
+
+        <div class="login-card">
+
+
+            <div class="mobile-logo">
+
+                <div class="logo-icon">
+
+                    <i class="fa-solid fa-heart-pulse"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>MedCare</strong>
+
+                    <span>Records System</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="login-heading">
+
+                <span class="welcome-label">
+                    WELCOME BACK
+                </span>
+
+                <h2>
+                    Sign in to your account
+                </h2>
+
+                <p>
+                    Enter your credentials to continue.
+                </p>
+
+            </div>
+
+
+            <!-- Flash messages -->
+
+            {% with messages =
+                get_flashed_messages(
+                    with_categories=true
+                )
+            %}
+
+                {% for category, message in messages %}
+
+                <div class="login-alert {{ category }}">
+
+                    {% if category == "success" %}
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    {% else %}
+
+                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                    {% endif %}
+
+                    <span>
+                        {{ message }}
+                    </span>
+
+                </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+
+            <!-- Login form -->
+
+            <form method="POST"
+                  action="{{ url_for('login') }}"
+                  autocomplete="off">
+
+
+                <!-- Username -->
+
+                <div class="input-group">
+
+                    <label for="username">
+
+                        Username
+
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="input-group">
+
+                    <div class="password-label">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Show password">
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="login-button">
+
+                    <span>
+                        Sign In
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- Bottom information -->
+
+            <div class="login-note">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <span>
+                    This system is intended for authorized
+                    users only.
+                </span>
+
+            </div>
+
+
+            <div class="login-footer">
+
+                <span>
+                    Medical Records System
+                </span>
+
+                <span class="footer-dot">•</span>
+
+                <span>
+                    Secure Access
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+        const toggleButton =
+            document.getElementById(
+                "passwordToggle"
+            );
+
+
+        if (
+            passwordInput &&
+            toggleButton
+        ) {
+
+            toggleButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        passwordInput.type ===
+                        "password"
+                    ) {
+
+                        passwordInput.type =
+                            "text";
+
+                        toggleButton.innerHTML =
+                            '<i class="fa-regular fa-eye-slash"></i>';
+
+                    } else {
+
+                        passwordInput.type =
+                            "password";
+
+                        toggleButton.innerHTML =
+                            '<i class="fa-regular fa-eye"></i>';
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

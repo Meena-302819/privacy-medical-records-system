@@ -1,0 +1,502 @@
+/* =========================================================
+   MEDICAL RECORDS - COMMON
+   ========================================================= */
+
+.records-page,
+.record-view-page,
+.add-record-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   RECORD VIEW PAGE
+   ========================================================= */
+
+.record-view-page {
+    padding: 25px;
+}
+
+
+/* =========================================================
+   SECURITY HEADER
+   ========================================================= */
+
+.record-security-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: #ffffff;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.18);
+}
+
+.record-security-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 28px;
+}
+
+.record-security-header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+}
+
+.record-security-header p {
+    margin: 0;
+    color: #dbeafe;
+}
+
+
+/* =========================================================
+   SECURITY STATUS
+   ========================================================= */
+
+.record-security-status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.security-status-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+}
+
+.security-status-item > i {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 19px;
+}
+
+.security-status-item strong {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.security-status-item span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MAIN RECORD CARD
+   ========================================================= */
+
+.record-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+.record-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.record-card-header h2 {
+    margin: 0 0 7px;
+    color: #0f172a;
+    font-size: 21px;
+}
+
+.record-card-header h2 i {
+    color: #2563eb;
+    margin-right: 8px;
+}
+
+.record-card-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.record-card-header strong {
+    color: #1e40af;
+}
+
+
+/* =========================================================
+   BACK SEARCH BUTTON
+   ========================================================= */
+
+.back-search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 17px;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.back-search-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RECORD SECTION
+   ========================================================= */
+
+.record-section {
+    padding: 25px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.section-title i {
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   RECORD GRID
+   ========================================================= */
+
+.record-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.record-field {
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #f8fafc;
+}
+
+.record-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.field-label i {
+    margin-right: 5px;
+    color: #2563eb;
+}
+
+.field-value {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.record-id-text {
+    color: #2563eb;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MEDICAL VALUE
+   ========================================================= */
+
+.medical-value {
+    min-height: 70px;
+    padding: 15px;
+    border-radius: 9px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   SECURITY NOTICE
+   ========================================================= */
+
+.record-security-notice {
+    display: flex;
+    gap: 15px;
+    margin: 25px;
+    padding: 18px;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    background: #eff6ff;
+}
+
+.notice-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.record-security-notice strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #1e3a8a;
+    font-size: 14px;
+}
+
+.record-security-notice p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   AUDIT NOTICE
+   ========================================================= */
+
+.record-audit-notice {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 25px 25px;
+    padding: 13px 16px;
+    border-radius: 9px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 13px;
+}
+
+.record-audit-notice i {
+    color: #16a34a;
+}
+
+
+/* =========================================================
+   RECORD LIST PAGE
+   ========================================================= */
+
+.records-page {
+    padding: 25px;
+}
+
+.records-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.records-header h1 {
+    margin: 0;
+    color: #0f172a;
+}
+
+.records-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+}
+
+.add-record-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.add-record-btn:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   RECORD TABLE
+   ========================================================= */
+
+.records-table-wrapper {
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.records-table th {
+    padding: 15px;
+    text-align: left;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.records-table td {
+    padding: 15px;
+    color: #334155;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.records-table tr:hover {
+    background: #f8fafc;
+}
+
+.view-record-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    background: #eff6ff;
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.view-record-btn:hover {
+    background: #dbeafe;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .record-security-status {
+        grid-template-columns: 1fr;
+    }
+
+    .record-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .record-field.full-width {
+        grid-column: auto;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .record-view-page,
+    .records-page {
+        padding: 15px;
+    }
+
+    .record-security-header {
+        padding: 20px;
+    }
+
+    .record-security-header h1 {
+        font-size: 22px;
+    }
+
+    .record-security-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+
+    .record-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .back-search-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .record-section {
+        padding: 18px;
+    }
+
+    .record-security-notice {
+        margin: 18px;
+    }
+
+    .record-audit-notice {
+        margin: 0 18px 18px;
+    }
+
+    .records-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .add-record-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

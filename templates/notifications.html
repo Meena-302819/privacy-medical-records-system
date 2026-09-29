@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}Security Notifications{% endblock %}
+
+{% block content %}
+
+<style>
+    .notifications-page {
+        padding: 10px 0 30px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-title h1 {
+        margin: 0;
+        font-size: 28px;
+        color: #1e293b;
+    }
+
+    .page-title p {
+        margin: 7px 0 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-btn {
+        text-decoration: none;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 9px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .action-btn:hover {
+        background: #dbeafe;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        padding: 21px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        color: #0f172a;
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .notifications-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 19px;
+        color: #1e293b;
+    }
+
+    .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .notification-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 18px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .notification-card.unread {
+        background: #f8fbff;
+        border-color: #bfdbfe;
+    }
+
+    .notification-icon {
+        width: 43px;
+        height: 43px;
+        min-width: 43px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 19px;
+    }
+
+    .notification-content {
+        flex: 1;
+    }
+
+    .notification-title {
+        margin: 0 0 6px;
+        color: #1e293b;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .notification-message {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .notification-time {
+        margin-top: 8px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .read-btn {
+        text-decoration: none;
+        background: #f1f5f9;
+        color: #475569;
+        padding: 7px 11px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .read-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .unread-badge {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .read-badge {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #64748b;
+    }
+
+    .empty-icon {
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 7px;
+        color: #334155;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    @media (max-width: 800px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .notification-card {
+            flex-direction: column;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="notifications-page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div class="page-title">
+            <h1>Security Notifications</h1>
+            <p>Monitor important system and security notifications.</p>
+        </div>
+
+        {% if notifications %}
+        <div class="header-actions">
+            <form method="POST"
+                  action="{{ url_for('mark_all_notifications_read') }}">
+
+                <button type="submit" class="action-btn">
+                    ✓ Mark All as Read
+                </button>
+
+            </form>
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- SUMMARY -->
+    {% set total_notifications = notifications|length %}
+    {% set unread_notifications = notifications
+        |selectattr('is_read', 'equalto', 0)
+        |list
+        |length
+    %}
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Total Notifications
+            </div>
+
+            <div class="summary-value">
+                {{ total_notifications }}
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Unread Notifications
+            </div>
+
+            <div class="summary-value">
+                {{ unread_notifications }}
+            </div>
+        </div>
+
+
+        <div class="summary-card">
+            <div class="summary-label">
+                Notification Status
+            </div>
+
+            <div class="summary-value">
+                {% if unread_notifications > 0 %}
+                    Active
+                {% else %}
+                    Clear
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+    <div class="notifications-section">
+
+        <div class="section-header">
+
+            <h2>Recent Notifications</h2>
+
+        </div>
+
+
+        {% if notifications %}
+
+        <div class="notification-list">
+
+            {% for notification in notifications %}
+
+            <div class="notification-card
+                {% if not notification.is_read %}unread{% endif %}">
+
+                <div class="notification-icon">
+                    {% if notification.notification_type == 'security' %}
+                        🛡️
+                    {% elif notification.notification_type == 'warning' %}
+                        ⚠️
+                    {% else %}
+                        🔔
+                    {% endif %}
+                </div>
+
+
+                <div class="notification-content">
+
+                    {% if notification.is_read %}
+
+                        <span class="status-badge read-badge">
+                            READ
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge unread-badge">
+                            NEW
+                        </span>
+
+                    {% endif %}
+
+
+                    <h3 class="notification-title">
+                        {{ notification.title }}
+                    </h3>
+
+
+                    <p class="notification-message">
+                        {{ notification.message }}
+                    </p>
+
+
+                    <div class="notification-time">
+                        {{ notification.created_at or '-' }}
+                    </div>
+
+                </div>
+
+
+                {% if not notification.is_read %}
+
+                <form method="POST"
+                      action="{{ url_for(
+                          'mark_notification_read',
+                          notification_id=notification.id
+                      ) }}">
+
+                    <button type="submit" class="read-btn">
+                        Mark Read
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🔔
+            </div>
+
+            <h3>No Notifications</h3>
+
+            <p>
+                You currently have no security notifications.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        Medical Records System
+        {% endblock %}
+    </title>
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+
+<body>
+
+{% if current_user %}
+
+<div class="app-layout">
+
+
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+
+            <div class="brand-text">
+
+                <strong>MedCare</strong>
+
+                <span>Records System</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="{{ url_for('patients') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-user-group"></i>
+
+                <span>Patients</span>
+
+            </a>
+
+
+            <a href="{{ url_for('records') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-file-medical"></i>
+
+                <span>Medical Records</span>
+
+            </a>
+
+
+            <a href="{{ url_for('add_record') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+
+                <span>Add Record</span>
+
+            </a>
+
+
+            <a href="{{ url_for('search') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>Search</span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                MANAGEMENT
+            </div>
+
+
+            <a href="{{ url_for('notifications') }}"
+               class="nav-item notification-nav">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>Notifications</span>
+
+                {% if unread_notification_count and unread_notification_count > 0 %}
+
+                <span class="notification-badge">
+
+                    {{ unread_notification_count }}
+
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('audit_logs') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                <span>Audit Logs</span>
+
+            </a>
+
+
+            <a href="{{ url_for('reports') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>Reports</span>
+
+            </a>
+
+
+            <a href="{{ url_for('backup') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-database"></i>
+
+                <span>Backup</span>
+
+            </a>
+
+
+            {% if current_user["role"] == "admin" %}
+
+            <div class="nav-section-title">
+                ADMINISTRATION
+            </div>
+
+
+            <a href="{{ url_for('users') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                <span>Users</span>
+
+            </a>
+
+
+            <a href="{{ url_for('security_alerts') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>Security Alerts</span>
+
+            </a>
+
+            {% endif %}
+
+        </nav>
+
+
+        <!-- Sidebar bottom -->
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user-mini">
+
+                <div class="mini-avatar">
+
+                    {{ current_user["full_name"][0]|upper }}
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        {{ current_user["full_name"] }}
+                    </strong>
+
+                    <span>
+                        {{ current_user["role"]|capitalize }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-link">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==================================================
+         MAIN AREA
+         ================================================== -->
+
+    <div class="main-area">
+
+
+        <!-- ==================================================
+             TOPBAR
+             ================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="menu-toggle"
+                        id="menuToggle"
+                        type="button">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+
+                <div class="page-location">
+
+                    <span>
+                        Medical Records
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <!-- Search shortcut -->
+
+                <a href="{{ url_for('search') }}"
+                   class="topbar-icon"
+                   title="Search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </a>
+
+
+                <!-- Notification -->
+
+                <a href="{{ url_for('notifications') }}"
+                   class="topbar-icon notification-icon"
+                   title="Notifications">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    {% if unread_notification_count and unread_notification_count > 0 %}
+
+                    <span class="top-notification-dot">
+
+                        {{ unread_notification_count }}
+
+                    </span>
+
+                    {% endif %}
+
+                </a>
+
+
+                <!-- User -->
+
+                <div class="topbar-user">
+
+                    <div class="topbar-avatar">
+
+                        {{ current_user["full_name"][0]|upper }}
+
+                    </div>
+
+                    <div class="topbar-user-info">
+
+                        <strong>
+                            {{ current_user["full_name"] }}
+                        </strong>
+
+                        <span>
+                            {{ current_user["role"]|capitalize }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ==================================================
+             FLASH MESSAGES
+             ================================================== -->
+
+        <div class="flash-container">
+
+            {% with messages = get_flashed_messages(
+                with_categories=true
+            ) %}
+
+                {% for category, message in messages %}
+
+                <div class="flash-message {{ category }}">
+
+                    {% if category == "success" %}
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    {% elif category == "danger" %}
+
+                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                    {% elif category == "warning" %}
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    {% else %}
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    {% endif %}
+
+                    <span>
+                        {{ message }}
+                    </span>
+
+                    <button type="button"
+                            class="flash-close">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+        </div>
+
+
+        <!-- ==================================================
+             PAGE CONTENT
+             ================================================== -->
+
+        <main class="page-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+
+        <!-- ==================================================
+             FOOTER
+             ================================================== -->
+
+        <footer class="footer">
+
+            <span>
+                Medical Records System
+            </span>
+
+            <span>
+                © {{ current_year }}
+            </span>
+
+        </footer>
+
+    </div>
+
+</div>
+
+
+{% else %}
+
+<!-- ======================================================
+     PUBLIC PAGE / LOGIN
+     ====================================================== -->
+
+<div class="public-page">
+
+    {% block public_content %}
+    {% endblock %}
+
+</div>
+
+{% endif %}
+
+
+<!-- Main JS -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+
+</html>

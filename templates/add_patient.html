@@ -1,0 +1,1081 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Patient
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   ADD PATIENT PAGE
+========================================================= */
+
+.add-patient-page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.add-patient-header {
+    margin-bottom: 22px;
+}
+
+.add-patient-header h1 {
+    margin: 0;
+
+    color: #173b57;
+
+    font-size: 30px;
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+}
+
+.add-patient-header p {
+    margin-top: 6px;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    text-shadow:
+        0 2px 7px rgba(0, 30, 60, 0.55);
+}
+
+
+/* =========================================================
+   MAIN FORM CARD
+========================================================= */
+
+.patient-form-card {
+    background: rgba(255, 255, 255, 0.90);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.75);
+
+    border-radius: 22px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 18px 50px
+        rgba(20, 55, 85, 0.18);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.form-section {
+    margin-bottom: 28px;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+
+.section-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 22px;
+
+    padding-bottom: 15px;
+
+    border-bottom:
+        1px solid
+        #e3edf5;
+}
+
+
+.section-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 13px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #0d9488
+        );
+
+    color: white;
+
+    font-size: 19px;
+
+    box-shadow:
+        0 8px 20px
+        rgba(37, 99, 235, 0.22);
+}
+
+
+.section-heading h2 {
+    margin: 0;
+
+    color: #173b57;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+
+.section-heading p {
+    margin: 4px 0 0;
+
+    color: #71869a;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px 22px;
+}
+
+
+.form-group {
+    margin: 0;
+}
+
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #29485f;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.required {
+    color: #dc3545;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-wrapper {
+    position: relative;
+}
+
+
+.input-icon {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #6c8aa0;
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+.input-wrapper textarea + .input-icon {
+    top: 18px;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   FORM INPUT
+========================================================= */
+
+.patient-input,
+.patient-select,
+.patient-textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid
+        #d7e3ec;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    border-radius: 11px;
+
+    padding: 12px 14px 12px 42px;
+
+    outline: none;
+
+    color: #243b53;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    transition:
+        0.2s ease;
+
+    box-shadow:
+        0 3px 10px
+        rgba(30, 70, 100, 0.03);
+}
+
+
+.patient-input::placeholder,
+.patient-textarea::placeholder {
+    color: #9aabb8;
+}
+
+
+.patient-input:hover,
+.patient-select:hover,
+.patient-textarea:hover {
+    border-color: #b9d0e2;
+}
+
+
+.patient-input:focus,
+.patient-select:focus,
+.patient-textarea:focus {
+    border-color: #2563eb;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.09),
+
+        0 7px 20px
+        rgba(37, 99, 235, 0.06);
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.patient-select {
+    cursor: pointer;
+
+    appearance: auto;
+}
+
+
+/* =========================================================
+   DATE INPUT
+========================================================= */
+
+.patient-input[type="date"] {
+    padding-right: 14px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TEXTAREA
+========================================================= */
+
+.patient-textarea {
+    min-height: 105px;
+
+    resize: vertical;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   AGE - READ ONLY
+========================================================= */
+
+.age-input {
+    background: #f5f9fc;
+
+    color: #526b7e;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FORM HINT
+========================================================= */
+
+.form-hint {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #8195a6;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ACTION AREA
+========================================================= */
+
+.form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding-top: 23px;
+
+    margin-top: 25px;
+
+    border-top:
+        1px solid
+        #e3edf5;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.patient-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px 20px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    transition:
+        0.2s ease;
+}
+
+
+.patient-btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+
+    color: white;
+
+    box-shadow:
+        0 8px 22px
+        rgba(37, 99, 235, 0.22);
+}
+
+
+.patient-btn-primary:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 28px
+        rgba(37, 99, 235, 0.30);
+}
+
+
+.patient-btn-secondary {
+    background: #eef4f8;
+
+    color: #526b7e;
+
+    border:
+        1px solid
+        #d9e5ee;
+}
+
+
+.patient-btn-secondary:hover {
+    background: #e5eef5;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 750px) {
+
+    .add-patient-page {
+        width: 100%;
+    }
+
+    .patient-form-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .add-patient-header h1 {
+        font-size: 25px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .patient-form-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .section-heading h2 {
+        font-size: 18px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .patient-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<div class="add-patient-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="add-patient-header">
+
+        <h1>
+            Add Patient
+        </h1>
+
+        <p>
+            Create a new patient profile.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         FORM CARD
+    ====================================================== -->
+
+    <div class="patient-form-card">
+
+        <form
+            method="POST"
+            action="{{ url_for('add_patient') }}"
+            autocomplete="off"
+        >
+
+
+            <!-- =================================================
+                 BASIC INFORMATION
+            ================================================== -->
+
+            <div class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Basic Information
+                        </h2>
+
+                        <p>
+                            Enter the patient's basic details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- PATIENT ID -->
+
+                    <div class="form-group">
+
+                        <label for="patient_id">
+                            Patient ID
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-id-card input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="patient_id"
+                                name="patient_id"
+                                class="patient-input"
+                                placeholder="Example: PAT001"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-user input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="patient-input"
+                                placeholder="Enter patient name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DATE OF BIRTH -->
+
+                    <div class="form-group">
+
+                        <label for="date_of_birth">
+                            Date of Birth
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-calendar-days input-icon"></i>
+
+                            <input
+                                type="date"
+                                id="date_of_birth"
+                                name="date_of_birth"
+                                class="patient-input"
+                                required
+                            >
+
+                        </div>
+
+                        <span class="form-hint">
+                            Select the patient's date of birth.
+                        </span>
+
+                    </div>
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label for="age">
+                            Age
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-calendar input-icon"></i>
+
+                            <input
+                                type="number"
+                                id="age"
+                                name="age"
+                                class="patient-input age-input"
+                                placeholder="Calculated automatically"
+                                readonly
+                            >
+
+                        </div>
+
+                        <span class="form-hint">
+                            Age is calculated from date of birth.
+                        </span>
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label for="gender">
+                            Gender
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-venus-mars input-icon"></i>
+
+                            <select
+                                id="gender"
+                                name="gender"
+                                class="patient-select"
+                            >
+
+                                <option value="">
+                                    Select Gender
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BLOOD GROUP -->
+
+                    <div class="form-group">
+
+                        <label for="blood_group">
+                            Blood Group
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-droplet input-icon"></i>
+
+                            <select
+                                id="blood_group"
+                                name="blood_group"
+                                class="patient-select"
+                            >
+
+                                <option value="">
+                                    Select Blood Group
+                                </option>
+
+                                <option value="A+">
+                                    A+
+                                </option>
+
+                                <option value="A-">
+                                    A-
+                                </option>
+
+                                <option value="B+">
+                                    B+
+                                </option>
+
+                                <option value="B-">
+                                    B-
+                                </option>
+
+                                <option value="AB+">
+                                    AB+
+                                </option>
+
+                                <option value="AB-">
+                                    AB-
+                                </option>
+
+                                <option value="O+">
+                                    O+
+                                </option>
+
+                                <option value="O-">
+                                    O-
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CONTACT INFORMATION
+            ================================================== -->
+
+            <div class="form-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        <i class="fa-solid fa-address-book"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Contact Information
+                        </h2>
+
+                        <p>
+                            Enter the patient's contact details.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-phone input-icon"></i>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                class="patient-input"
+                                placeholder="Enter phone number"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email
+                            <span style="font-weight:500;color:#91a0ae;">
+                                (Optional)
+                            </span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-envelope input-icon"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="patient-input"
+                                placeholder="Enter email address"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="form-group full-width">
+
+                        <label for="address">
+                            Address
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-location-dot input-icon"></i>
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                class="patient-textarea"
+                                placeholder="Enter complete address"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMERGENCY CONTACT -->
+
+                    <div class="form-group">
+
+                        <label for="emergency_contact">
+                            Emergency Contact
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-phone-volume input-icon"></i>
+
+                            <input
+                                type="tel"
+                                id="emergency_contact"
+                                name="emergency_contact"
+                                class="patient-input"
+                                placeholder="Emergency contact number"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('patients') }}"
+                    class="patient-btn patient-btn-secondary"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Cancel
+
+                </a>
+
+
+                <button
+                    type="reset"
+                    class="patient-btn patient-btn-secondary"
+                >
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Reset
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="patient-btn patient-btn-primary"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Patient
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     AGE CALCULATION
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const dobInput =
+        document.getElementById("date_of_birth");
+
+    const ageInput =
+        document.getElementById("age");
+
+
+    function calculateAge() {
+
+        if (!dobInput.value) {
+
+            ageInput.value = "";
+
+            return;
+        }
+
+
+        const dob =
+            new Date(dobInput.value + "T00:00:00");
+
+        const today =
+            new Date();
+
+
+        let age =
+            today.getFullYear() -
+            dob.getFullYear();
+
+
+        const monthDifference =
+            today.getMonth() -
+            dob.getMonth();
+
+
+        if (
+            monthDifference < 0 ||
+            (
+                monthDifference === 0 &&
+                today.getDate() < dob.getDate()
+            )
+        ) {
+
+            age--;
+
+        }
+
+
+        if (age >= 0) {
+
+            ageInput.value = age;
+
+        } else {
+
+            ageInput.value = "";
+
+        }
+
+    }
+
+
+    dobInput.addEventListener(
+        "change",
+        calculateAge
+    );
+
+
+    dobInput.addEventListener(
+        "input",
+        calculateAge
+    );
+
+
+    // Prevent future DOB
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    dobInput.max = today;
+
+});
+
+</script>
+
+{% endblock %}

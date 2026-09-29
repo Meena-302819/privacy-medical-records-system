@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Medical Records System</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- ==================================================
+         SIDEBAR
+         ================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+
+            <div class="brand-text">
+                <strong>MedCare</strong>
+                <span>Records System</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-item active">
+
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="{{ url_for('patients') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-user-group"></i>
+                <span>Patients</span>
+
+            </a>
+
+
+            <a href="{{ url_for('records') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-file-medical"></i>
+                <span>Medical Records</span>
+
+            </a>
+
+
+            <a href="{{ url_for('add_record') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-file-circle-plus"></i>
+                <span>Add Record</span>
+
+            </a>
+
+
+            <a href="{{ url_for('search') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                MANAGEMENT
+            </div>
+
+
+            <a href="{{ url_for('notifications') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+
+                {% if notification_count > 0 %}
+
+                <span class="notification-badge">
+                    {{ notification_count }}
+                </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{{ url_for('audit_logs') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Audit Logs</span>
+
+            </a>
+
+
+            <a href="{{ url_for('reports') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Reports</span>
+
+            </a>
+
+
+            <a href="{{ url_for('backup') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-database"></i>
+                <span>Backup</span>
+
+            </a>
+
+
+            {% if current_user["role"] == "admin" %}
+
+            <div class="nav-section-title">
+                ADMINISTRATION
+            </div>
+
+
+            <a href="{{ url_for('users') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Users</span>
+
+            </a>
+
+
+            <a href="{{ url_for('security_alerts') }}"
+               class="nav-item">
+
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Security Alerts</span>
+
+            </a>
+
+            {% endif %}
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user-mini">
+
+                <div class="mini-avatar">
+                    {{ current_user["full_name"][0]|upper }}
+                </div>
+
+                <div>
+
+                    <strong>
+                        {{ current_user["full_name"] }}
+                    </strong>
+
+                    <span>
+                        {{ current_user["role"]|capitalize }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="logout-link">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ==================================================
+         MAIN
+         ================================================== -->
+
+    <div class="main-area">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="menu-toggle"
+                        id="menuToggle">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <div class="page-location">
+                    Dashboard
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <a href="{{ url_for('search') }}"
+                   class="topbar-icon">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </a>
+
+
+                <a href="{{ url_for('notifications') }}"
+                   class="topbar-icon">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    {% if notification_count > 0 %}
+
+                    <span class="top-notification-dot">
+                        {{ notification_count }}
+                    </span>
+
+                    {% endif %}
+
+                </a>
+
+
+                <div class="topbar-user">
+
+                    <div class="topbar-avatar">
+
+                        {{ current_user["full_name"][0]|upper }}
+
+                    </div>
+
+                    <div class="topbar-user-info">
+
+                        <strong>
+                            {{ current_user["full_name"] }}
+                        </strong>
+
+                        <span>
+                            {{ current_user["role"]|capitalize }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- PAGE -->
+
+        <main class="page-content">
+
+
+            <!-- ==================================================
+                 WELCOME
+                 ================================================== -->
+
+            <section class="dashboard-welcome">
+
+                <div>
+
+                    <span class="welcome-small">
+                        GOOD DAY
+                    </span>
+
+                    <h1>
+                        Welcome back,
+                        {{ current_user["full_name"] }}
+                    </h1>
+
+                    <p>
+                        Here is an overview of your medical
+                        records system.
+                    </p>
+
+                </div>
+
+
+                <a href="{{ url_for('add_record') }}"
+                   class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Medical Record
+
+                </a>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 STATISTICS
+                 ================================================== -->
+
+            <section class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+
+                        <i class="fa-solid fa-user-group"></i>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>
+                            Total Patients
+                        </span>
+
+                        <strong>
+                            {{ patient_count }}
+                        </strong>
+
+                        <small>
+                            Registered patients
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+
+                        <i class="fa-solid fa-file-medical"></i>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>
+                            Medical Records
+                        </span>
+
+                        <strong>
+                            {{ record_count }}
+                        </strong>
+
+                        <small>
+                            Records available
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>
+                            Active Users
+                        </span>
+
+                        <strong>
+                            {{ user_count }}
+                        </strong>
+
+                        <small>
+                            System users
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+
+                        <i class="fa-solid fa-bell"></i>
+
+                    </div>
+
+                    <div class="stat-content">
+
+                        <span>
+                            Notifications
+                        </span>
+
+                        <strong>
+                            {{ notification_count }}
+                        </strong>
+
+                        <small>
+                            Unread notifications
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 MAIN DASHBOARD GRID
+                 ================================================== -->
+
+            <section class="dashboard-grid">
+
+
+                <!-- RECENT PATIENTS -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Recent Patients
+                            </h2>
+
+                            <p>
+                                Recently added patient profiles
+                            </p>
+
+                        </div>
+
+
+                        <a href="{{ url_for('patients') }}"
+                           class="view-link">
+
+                            View all
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    {% if recent_patients %}
+
+                    <div class="patient-list">
+
+                        {% for patient in recent_patients %}
+
+                        <a href="{{ url_for(
+                            'patient_profile',
+                            patient_id=patient['id']
+                        ) }}"
+                           class="patient-row">
+
+                            <div class="patient-avatar">
+
+                                {{ patient["name"][0]|upper }}
+
+                            </div>
+
+
+                            <div class="patient-info">
+
+                                <strong>
+                                    {{ patient["name"] }}
+                                </strong>
+
+                                <span>
+                                    {{ patient["patient_code"] }}
+                                </span>
+
+                            </div>
+
+
+                            <i class="fa-solid fa-chevron-right
+                                      patient-arrow"></i>
+
+                        </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+
+                            <i class="fa-solid fa-user-plus"></i>
+
+                        </div>
+
+                        <strong>
+                            No patients yet
+                        </strong>
+
+                        <span>
+                            Add your first patient profile.
+                        </span>
+
+                        <a href="{{ url_for('add_patient') }}"
+                           class="btn btn-primary">
+
+                            Add Patient
+
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- RECENT RECORDS -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Recent Medical Records
+                            </h2>
+
+                            <p>
+                                Latest patient records
+                            </p>
+
+                        </div>
+
+
+                        <a href="{{ url_for('records') }}"
+                           class="view-link">
+
+                            View all
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    {% if recent_records %}
+
+                    <div class="record-list">
+
+                        {% for record in recent_records %}
+
+                        <a href="{{ url_for(
+                            'record_detail',
+                            record_id=record['id']
+                        ) }}"
+                           class="record-row">
+
+                            <div class="record-icon">
+
+                                <i class="fa-solid fa-file-medical"></i>
+
+                            </div>
+
+
+                            <div class="record-info">
+
+                                <strong>
+                                    {{ record["name"] }}
+                                </strong>
+
+                                <span>
+                                    {{ record["patient_code"] }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="record-date">
+
+                                <span>
+                                    {{ record["created_at"] }}
+                                </span>
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </div>
+
+                        </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+
+                            <i class="fa-solid fa-file-circle-plus"></i>
+
+                        </div>
+
+                        <strong>
+                            No medical records yet
+                        </strong>
+
+                        <span>
+                            Add a record to get started.
+                        </span>
+
+                        <a href="{{ url_for('add_record') }}"
+                           class="btn btn-primary">
+
+                            Add Record
+
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 QUICK ACTIONS
+                 ================================================== -->
+
+            <section class="quick-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+
+                        <p>
+                            Common tasks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-grid">
+
+
+                    <a href="{{ url_for('add_patient') }}"
+                       class="quick-card">
+
+                        <div class="quick-icon blue">
+
+                            <i class="fa-solid fa-user-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Add Patient
+                            </strong>
+
+                            <span>
+                                Create a new patient profile
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('add_record') }}"
+                       class="quick-card">
+
+                        <div class="quick-icon green">
+
+                            <i class="fa-solid fa-file-circle-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Add Record
+                            </strong>
+
+                            <span>
+                                Add a new medical record
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('search') }}"
+                       class="quick-card">
+
+                        <div class="quick-icon purple">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Search Records
+                            </strong>
+
+                            <span>
+                                Find patient information
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('reports') }}"
+                       class="quick-card">
+
+                        <div class="quick-icon orange">
+
+                            <i class="fa-solid fa-chart-column"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                View Reports
+                            </strong>
+
+                            <span>
+                                Review system activity
+                            </span>
+
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            <span>
+                Medical Records System
+            </span>
+
+            <span>
+                © {{ current_year }}
+            </span>
+
+        </footer>
+
+    </div>
+
+</div>
+
+
+<script src="{{ url_for(
+    'static',
+    filename='js/script.js'
+) }}"></script>
+
+</body>
+
+</html>

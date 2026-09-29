@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+medical_records.db
+*.db
+
+.env
+*.env
+
+.vscode/
+
+keys/

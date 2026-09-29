@@ -1,0 +1,387 @@
+/* =========================================
+   PATIENT PROFILE
+========================================= */
+
+.page-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* =========================================
+   PROFILE CARD
+========================================= */
+
+.profile-card {
+    background: #ffffff;
+    border: 1px solid #e8eef5;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(25, 55, 90, 0.05);
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.profile-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 25px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    border-radius: 18px;
+    background: #eaf4ff;
+    color: #2f80ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.profile-main {
+    flex: 1;
+}
+
+.profile-main h2 {
+    margin: 0 0 7px;
+    color: #172b4d;
+    font-size: 23px;
+}
+
+.profile-id {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #f0f6ff;
+    color: #2877d1;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.profile-main p {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 9px 0 0;
+    color: #718096;
+    font-size: 13px;
+}
+
+.profile-main p i {
+    color: #6d91b5;
+}
+
+.profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #edf9f2;
+    color: #2f8f5b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3dbb72;
+}
+
+
+/* =========================================
+   PROFILE DETAILS
+========================================= */
+
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.detail-item {
+    padding: 19px 22px;
+    border-right: 1px solid #edf1f5;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.detail-item:nth-child(3n) {
+    border-right: none;
+}
+
+.detail-item-wide {
+    grid-column: 1 / -1;
+    border-right: none;
+}
+
+.detail-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+    color: #8996a5;
+    font-size: 12px;
+}
+
+.detail-label i {
+    color: #6c91b7;
+}
+
+.detail-item strong {
+    display: block;
+    color: #34465a;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.blood-value {
+    color: #d94b4b !important;
+}
+
+
+/* =========================================
+   PROFILE SECTION
+========================================= */
+
+.profile-section {
+    background: #ffffff;
+    border: 1px solid #e8eef5;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(25, 55, 90, 0.05);
+    overflow: hidden;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 21px 24px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.section-heading h2 {
+    margin: 0;
+    color: #172b4d;
+    font-size: 18px;
+}
+
+.section-heading p {
+    margin: 5px 0 0;
+    color: #8290a0;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   MEDICAL RECORD CARDS
+========================================= */
+
+.profile-records {
+    padding: 15px 20px;
+}
+
+.record-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px;
+    border: 1px solid #e9eef3;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+}
+
+.record-card:last-child {
+    margin-bottom: 0;
+}
+
+.record-card:hover {
+    border-color: #cfe1f5;
+    background: #fafdff;
+    transform: translateY(-1px);
+}
+
+.record-card-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.record-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 10px;
+    background: #eef6ff;
+    color: #2f80ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+}
+
+.record-card h3 {
+    margin: 0;
+    color: #34465a;
+    font-size: 14px;
+}
+
+.record-card p {
+    margin: 5px 0 0;
+    color: #8a97a5;
+    font-size: 12px;
+}
+
+.record-card-action {
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   EMPTY RECORD STATE
+========================================= */
+
+.profile-empty {
+    text-align: center;
+    padding: 55px 20px;
+}
+
+.profile-empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #eef6ff;
+    color: #2f80ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.profile-empty h3 {
+    margin: 0 0 7px;
+    color: #34465a;
+    font-size: 17px;
+}
+
+.profile-empty p {
+    max-width: 400px;
+    margin: 0 auto 18px;
+    color: #8794a3;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   PROFILE RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .profile-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail-item:nth-child(3n) {
+        border-right: 1px solid #edf1f5;
+    }
+
+    .detail-item:nth-child(2n) {
+        border-right: none;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .page-header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .page-header-actions .btn {
+        flex: 1;
+    }
+
+    .profile-top {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .profile-status {
+        margin-left: 90px;
+    }
+
+    .profile-details {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-item,
+    .detail-item:nth-child(2n),
+    .detail-item:nth-child(3n) {
+        border-right: none;
+    }
+
+    .detail-item-wide {
+        grid-column: auto;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .record-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .record-card-action {
+        width: 100%;
+    }
+
+    .record-card-action .view-btn {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .profile-top {
+        padding: 18px;
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        font-size: 23px;
+    }
+
+    .profile-main h2 {
+        font-size: 19px;
+    }
+
+    .profile-status {
+        margin-left: 0;
+    }
+
+    .profile-records {
+        padding: 12px;
+    }
+
+}

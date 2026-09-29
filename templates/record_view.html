@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Medical Record{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/records.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Medical Record</h1>
+        <p>View patient medical information.</p>
+    </div>
+
+    <div class="page-header-actions">
+
+        <a href="{{ url_for('records') }}"
+           class="btn btn-light">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Records
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <!-- Record Header -->
+
+    <div class="form-card-header">
+
+        <h2>
+            <i class="fa-solid fa-file-medical"></i>
+            Record Information
+        </h2>
+
+        <p>
+            Record ID:
+            <strong>{{ record["record_id"] }}</strong>
+        </p>
+
+    </div>
+
+
+    <!-- Patient -->
+
+    <div class="form-section">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Patient ID</label>
+
+                <input
+                    type="text"
+                    value="{{ record['patient_id'] }}"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Created By</label>
+
+                <input
+                    type="text"
+                    value="{{ record['created_by_name'] or 'Authorized User' }}"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Medical Information -->
+
+    <div class="form-card-header">
+
+        <h2>
+            <i class="fa-solid fa-stethoscope"></i>
+            Medical Information
+        </h2>
+
+    </div>
+
+
+    <div class="form-section">
+
+        <div class="form-grid">
+
+
+            <div class="form-group form-group-full">
+
+                <label>Diagnosis</label>
+
+                <textarea readonly>{{ record["diagnosis"] or "No information available." }}</textarea>
+
+            </div>
+
+
+            <div class="form-group form-group-full">
+
+                <label>Symptoms</label>
+
+                <textarea readonly>{{ record["symptoms"] or "No information available." }}</textarea>
+
+            </div>
+
+
+            <div class="form-group form-group-full">
+
+                <label>Medical History</label>
+
+                <textarea readonly>{{ record["medical_history"] or "No information available." }}</textarea>
+
+            </div>
+
+
+            <div class="form-group form-group-full">
+
+                <label>Prescription</label>
+
+                <textarea readonly>{{ record["prescription"] or "No information available." }}</textarea>
+
+            </div>
+
+
+            <div class="form-group form-group-full">
+
+                <label>Test Results</label>
+
+                <textarea readonly>{{ record["test_results"] or "No information available." }}</textarea>
+
+            </div>
+
+
+            <div class="form-group form-group-full">
+
+                <label>Doctor Notes</label>
+
+                <textarea readonly>{{ record["doctor_notes"] or "No information available." }}</textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Dates -->
+
+    <div class="form-card-header">
+
+        <h2>
+            <i class="fa-regular fa-clock"></i>
+            Record History
+        </h2>
+
+    </div>
+
+
+    <div class="form-section">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Created At</label>
+
+                <input
+                    type="text"
+                    value="{{ record['created_at'] or '—' }}"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Last Updated</label>
+
+                <input
+                    type="text"
+                    value="{{ record['updated_at'] or '—' }}"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+        <a href="{{ url_for('records') }}"
+           class="btn btn-light">
+
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Records
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% block title %}Backup & Data Protection{% endblock %}
+
+{% block content %}
+
+<style>
+    .backup-page {
+        padding: 10px 0 30px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-title h1 {
+        margin: 0;
+        font-size: 28px;
+        color: #1e293b;
+    }
+
+    .page-title p {
+        margin: 7px 0 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .backup-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .backup-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .backup-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .backup-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .backup-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eff6ff;
+        border-radius: 12px;
+        font-size: 21px;
+        margin-bottom: 15px;
+    }
+
+    .backup-card h3 {
+        margin: 0 0 8px;
+        color: #1e293b;
+        font-size: 17px;
+    }
+
+    .backup-card p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .backup-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 19px;
+        color: #1e293b;
+    }
+
+    .section-header span {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .backup-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .backup-table th {
+        background: #f8fafc;
+        text-align: left;
+        padding: 13px 12px;
+        color: #475569;
+        font-size: 13px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .backup-table td {
+        padding: 14px 12px;
+        color: #334155;
+        font-size: 14px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .backup-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .badge-type {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 35px 20px;
+        color: #64748b;
+    }
+
+    .security-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .security-item {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    .security-item h3 {
+        margin: 0 0 8px;
+        color: #334155;
+        font-size: 15px;
+    }
+
+    .security-item p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .notice {
+        padding: 15px 18px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 11px;
+        color: #1e40af;
+        font-size: 13px;
+        margin-top: 20px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+        .backup-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .security-box {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .backup-section {
+            overflow-x: auto;
+        }
+
+        .backup-table {
+            min-width: 650px;
+        }
+    }
+
+    @media print {
+        .backup-btn {
+            display: none;
+        }
+
+        .page-header {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+
+
+<div class="backup-page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div class="page-title">
+            <h1>Backup & Data Protection</h1>
+            <p>Protect and manage your medical records database.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('create_backup') }}">
+            <button type="submit" class="backup-btn">
+                💾 Create Backup
+            </button>
+        </form>
+
+    </div>
+
+
+    <!-- BACKUP INFORMATION -->
+    <div class="backup-grid">
+
+        <div class="backup-card">
+
+            <div class="backup-icon">💾</div>
+
+            <h3>Database Backup</h3>
+
+            <p>
+                Create a secure copy of the medical records database
+                for recovery and data protection.
+            </p>
+
+        </div>
+
+
+        <div class="backup-card">
+
+            <div class="backup-icon">🔐</div>
+
+            <h3>Protected Data</h3>
+
+            <p>
+                Sensitive medical information remains protected
+                through encrypted storage mechanisms.
+            </p>
+
+        </div>
+
+
+        <div class="backup-card">
+
+            <div class="backup-icon">🛡️</div>
+
+            <h3>Recovery Support</h3>
+
+            <p>
+                Backup files can be downloaded and retained for
+                future recovery requirements.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- BACKUP HISTORY -->
+    <div class="backup-section">
+
+        <div class="section-header">
+
+            <h2>Backup History</h2>
+
+            <span>
+                Previously created backups
+            </span>
+
+        </div>
+
+
+        {% if backups %}
+
+        <table class="backup-table">
+
+            <thead>
+
+                <tr>
+                    <th>File Name</th>
+                    <th>Backup Type</th>
+                    <th>Created By</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for backup in backups %}
+
+                <tr>
+
+                    <td>
+                        {{ backup.file_name }}
+                    </td>
+
+                    <td>
+                        <span class="badge badge-type">
+                            {{ backup.backup_type or 'Database' }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ backup.created_by or '-' }}
+                    </td>
+
+                    <td>
+                        {{ backup.created_at or '-' }}
+                    </td>
+
+                    <td>
+                        <span class="badge badge-success">
+                            Completed
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url_for('download_backup', filename=backup.file_name) }}"
+                           class="btn btn-secondary"
+                           style="
+                               text-decoration:none;
+                               padding:7px 11px;
+                               border-radius:7px;
+                               background:#e2e8f0;
+                               color:#334155;
+                               font-size:12px;
+                           ">
+                            Download
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div style="font-size:35px; margin-bottom:10px;">
+                💾
+            </div>
+
+            <strong>No backups available</strong>
+
+            <p>
+                Create your first database backup using the button above.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- DATA PROTECTION -->
+    <div class="backup-section">
+
+        <div class="section-header">
+
+            <h2>Data Protection</h2>
+
+            <span>
+                Security measures
+            </span>
+
+        </div>
+
+
+        <div class="security-box">
+
+            <div class="security-item">
+
+                <h3>🔒 Encryption</h3>
+
+                <p>
+                    Sensitive medical record fields are encrypted before
+                    being stored in the database.
+                </p>
+
+            </div>
+
+
+            <div class="security-item">
+
+                <h3>👤 Access Control</h3>
+
+                <p>
+                    Only authenticated and authorized users can access
+                    protected system features.
+                </p>
+
+            </div>
+
+
+            <div class="security-item">
+
+                <h3>📋 Audit Logging</h3>
+
+                <p>
+                    Important activities are recorded in audit logs
+                    for security monitoring.
+                </p>
+
+            </div>
+
+
+            <div class="security-item">
+
+                <h3>🚨 Security Alerts</h3>
+
+                <p>
+                    Unauthorized access attempts and suspicious events
+                    are recorded as security alerts.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="notice">
+            <strong>Security Notice:</strong>
+            Keep downloaded backup files in a secure location.
+            Backup files may contain sensitive medical information.
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

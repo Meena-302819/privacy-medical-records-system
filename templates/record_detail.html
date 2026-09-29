@@ -1,0 +1,1108 @@
+{% extends "base.html" %}
+
+{% block title %}Medical Record Details{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.record-page {
+    padding: 8px 0 40px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.record-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    margin-bottom: 22px;
+
+    flex-wrap: wrap;
+}
+
+.record-title-area {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.record-icon {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 21px;
+}
+
+.record-title-area h1 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 25px;
+    font-weight: 750;
+}
+
+.record-title-area p {
+    margin: 4px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HEADER BUTTONS
+========================================================= */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    flex-wrap: wrap;
+}
+
+.back-btn,
+.patient-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 10px 14px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    transition: 0.2s;
+}
+
+.back-btn {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.back-btn:hover {
+    background: #e2e8f0;
+}
+
+.patient-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.patient-btn:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   RECORD INFORMATION BAR
+========================================================= */
+
+.record-info-bar {
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+
+    border-radius: 14px;
+
+    padding: 15px 18px;
+
+    margin-bottom: 18px;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 15px;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.035);
+}
+
+.info-item {
+    min-width: 0;
+}
+
+.info-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    display: block;
+
+    color: #1e293b;
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   PATIENT CARD
+========================================================= */
+
+.patient-card {
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+
+    border-radius: 14px;
+
+    padding: 17px 18px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.035);
+}
+
+.patient-card-header {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 15px;
+}
+
+.patient-avatar {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 17px;
+}
+
+.patient-card-header h2 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 17px;
+}
+
+.patient-card-header p {
+    margin: 3px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PATIENT DETAILS
+========================================================= */
+
+.patient-details {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 11px;
+}
+
+.patient-detail {
+    background: #f8fafc;
+
+    border: 1px solid #edf1f5;
+
+    border-radius: 9px;
+
+    padding: 10px 12px;
+}
+
+.patient-detail span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+.patient-detail strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   MEDICAL SECTION TITLE
+========================================================= */
+
+.medical-section-title {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin: 0 0 13px;
+}
+
+.medical-section-title i {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 14px;
+}
+
+.medical-section-title h2 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MEDICAL GRID
+========================================================= */
+
+.medical-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   MEDICAL DETAIL CARD
+========================================================= */
+
+.medical-detail-card {
+    background: #ffffff;
+
+    border: 1px solid #e3e8ef;
+
+    border-radius: 14px;
+
+    padding: 16px 17px;
+
+    height: auto;
+
+    min-height: 0;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.035);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.medical-detail-card:hover {
+    border-color: #d5dde7;
+
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.055);
+}
+
+
+/* Full width */
+
+.medical-detail-card.full-width {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   MEDICAL CARD HEADING
+========================================================= */
+
+.detail-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 11px;
+}
+
+.detail-heading i {
+    width: 33px;
+    height: 33px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+}
+
+.detail-heading h3 {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MEDICAL TEXT BOX
+========================================================= */
+
+.detail-content {
+    display: block !important;
+
+    width: 100%;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    box-sizing: border-box;
+
+    padding: 11px 13px;
+
+    background: #f8fafc;
+
+    border: 1px solid #edf1f5;
+
+    border-radius: 9px;
+
+    color: #334155;
+
+    font-size: 15px;
+
+    font-weight: 450;
+
+    line-height: 1.65;
+
+    text-align: left;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+    overflow-wrap: anywhere;
+
+    /* Prevent center alignment */
+    align-items: initial !important;
+    justify-content: initial !important;
+}
+
+
+/* =========================================================
+   EMPTY MEDICAL TEXT
+========================================================= */
+
+.detail-empty {
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    font-style: italic;
+}
+
+
+/* =========================================================
+   SECURITY NOTICE
+========================================================= */
+
+.security-notice {
+    margin-top: 20px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 13px 15px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 11px;
+}
+
+.security-notice > i {
+    color: #2563eb;
+
+    font-size: 16px;
+
+    margin-top: 2px;
+}
+
+.security-notice strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #334155;
+
+    font-size: 12px;
+}
+
+.security-notice p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .record-info-bar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .patient-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .medical-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .medical-detail-card.full-width {
+        grid-column: auto;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .record-title-area h1 {
+        font-size: 21px;
+    }
+
+    .record-header {
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .back-btn,
+    .patient-btn {
+        flex: 1;
+    }
+
+    .record-info-bar {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-details {
+        grid-template-columns: 1fr;
+    }
+
+    .medical-detail-card {
+        padding: 14px;
+    }
+
+    .detail-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .header-actions {
+        flex-direction: column;
+    }
+
+    .back-btn,
+    .patient-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<div class="record-page">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="record-header">
+
+        <div class="record-title-area">
+
+            <div class="record-icon">
+                <i class="fa-solid fa-file-medical"></i>
+            </div>
+
+            <div>
+
+                <h1>
+                    Medical Record
+                </h1>
+
+                <p>
+                    Secure medical record details
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <a
+                href="{{ url_for(
+                    'patient_profile',
+                    patient_id=record['patient_id']
+                ) }}"
+                class="patient-btn"
+            >
+
+                <i class="fa-solid fa-user"></i>
+
+                Patient Profile
+
+            </a>
+
+
+            <a
+                href="{{ url_for('records') }}"
+                class="back-btn"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Records
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         RECORD INFORMATION
+    ====================================================== -->
+
+    <div class="record-info-bar">
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Record ID
+            </span>
+
+            <span class="info-value">
+                {{ record["record_id"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Patient ID
+            </span>
+
+            <span class="info-value">
+                {{ record["patient_unique_id"] }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Created
+            </span>
+
+            <span class="info-value">
+                {{ record["created_at"] or "—" }}
+            </span>
+
+        </div>
+
+
+        <div class="info-item">
+
+            <span class="info-label">
+                Last Updated
+            </span>
+
+            <span class="info-value">
+                {{ record["updated_at"] or "—" }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PATIENT INFORMATION
+    ====================================================== -->
+
+    <div class="patient-card">
+
+
+        <div class="patient-card-header">
+
+            <div class="patient-avatar">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    {{ record["patient_name"] }}
+                </h2>
+
+                <p>
+                    Patient Information
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="patient-details">
+
+
+            <div class="patient-detail">
+
+                <span>
+                    Patient Code
+                </span>
+
+                <strong>
+                    {{ record["patient_code"] or "—" }}
+                </strong>
+
+            </div>
+
+
+            <div class="patient-detail">
+
+                <span>
+                    Patient ID
+                </span>
+
+                <strong>
+                    {{ record["patient_unique_id"] or "—" }}
+                </strong>
+
+            </div>
+
+
+            <div class="patient-detail">
+
+                <span>
+                    Phone
+                </span>
+
+                <strong>
+                    {{ record["patient_phone"] or "—" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MEDICAL INFORMATION TITLE
+    ====================================================== -->
+
+    <div class="medical-section-title">
+
+        <i class="fa-solid fa-notes-medical"></i>
+
+        <h2>
+            Medical Information
+        </h2>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MEDICAL INFORMATION
+    ====================================================== -->
+
+    <div class="medical-grid">
+
+
+        <!-- =================================================
+             DIAGNOSIS
+        ================================================== -->
+
+        <div class="medical-detail-card">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-stethoscope"></i>
+
+                <h3>
+                    Diagnosis
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["diagnosis"] %}
+
+                    {{ record["diagnosis"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No diagnosis information available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SYMPTOMS
+        ================================================== -->
+
+        <div class="medical-detail-card">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-temperature-high"></i>
+
+                <h3>
+                    Symptoms
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["symptoms"] %}
+
+                    {{ record["symptoms"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No symptoms information available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             MEDICAL HISTORY
+        ================================================== -->
+
+        <div class="medical-detail-card full-width">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                <h3>
+                    Medical History
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["medical_history"] %}
+
+                    {{ record["medical_history"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No medical history available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PRESCRIPTION
+        ================================================== -->
+
+        <div class="medical-detail-card">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-pills"></i>
+
+                <h3>
+                    Prescription
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["prescription"] %}
+
+                    {{ record["prescription"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No prescription information available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TEST RESULTS
+        ================================================== -->
+
+        <div class="medical-detail-card">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-flask"></i>
+
+                <h3>
+                    Test Results
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["test_results"] %}
+
+                    {{ record["test_results"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No test results available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             DOCTOR NOTES
+        ================================================== -->
+
+        <div class="medical-detail-card full-width">
+
+            <div class="detail-heading">
+
+                <i class="fa-solid fa-user-doctor"></i>
+
+                <h3>
+                    Doctor Notes
+                </h3>
+
+            </div>
+
+
+            <div class="detail-content">
+
+                {% if record["doctor_notes"] %}
+
+                    {{ record["doctor_notes"] }}
+
+                {% else %}
+
+                    <span class="detail-empty">
+                        No doctor notes available.
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SECURITY NOTICE
+    ====================================================== -->
+
+    <div class="security-notice">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <div>
+
+            <strong>
+                Secure Medical Record
+            </strong>
+
+            <p>
+                Medical information is protected and displayed only
+                to authenticated users with appropriate access.
+                Access activity is recorded in the system audit logs.
+            </p>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
