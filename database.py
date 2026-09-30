@@ -711,7 +711,7 @@ def create_default_admin():
             "admin",
             password_hash,
             "Administrator",
-            "admin@example.com",
+            "sujithram3028@gmail.com",
             "admin",
             1
         ))
