@@ -17,12 +17,12 @@ import time
 import secrets
 import hashlib
 import hmac
-import smtplib
+import json
+import urllib.request
+import urllib.error
 
 from datetime import datetime
 
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 from dotenv import load_dotenv
 
@@ -48,6 +48,85 @@ from auth import (
 # =========================================================
 
 app = Flask(__name__)
+
+
+# =========================================================
+# RESEND EMAIL FUNCTION
+# =========================================================
+
+def send_resend_email(to_email, subject, body):
+    """
+    Send email through Resend API.
+
+    RESEND_API_KEY must be configured in the environment.
+    MAIL_SENDER is optional and defaults to Resend's onboarding sender.
+    """
+
+    api_key = os.getenv("RESEND_API_KEY")
+
+    if not api_key:
+        raise RuntimeError(
+            "RESEND_API_KEY is not configured."
+        )
+
+    sender = os.getenv(
+        "MAIL_SENDER",
+        "onboarding@resend.dev"
+    )
+
+    payload = {
+        "from": sender,
+        "to": [to_email],
+        "subject": subject,
+        "text": body
+    }
+
+    data = json.dumps(payload).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=data,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "PrivacyMedicalRecordsSystem/1.0"
+        },
+        method="POST"
+    )
+
+    try:
+        with urllib.request.urlopen(
+            req,
+            timeout=20
+        ) as response:
+            response_data = response.read().decode("utf-8")
+            print("Resend email response:", response_data)
+            return True
+
+    except urllib.error.HTTPError as error:
+        error_body = error.read().decode(
+            "utf-8",
+            errors="replace"
+        )
+
+        print(
+            "Resend API error:",
+            error.code,
+            error_body
+        )
+
+        raise RuntimeError(
+            f"Resend email failed: {error_body}"
+        )
+
+    except Exception as error:
+        print(
+            "Resend connection error:",
+            error
+        )
+        raise
+
+
 load_dotenv()
 
 app.secret_key = os.environ.get(
@@ -221,6 +300,125 @@ def create_search_index(record_id, fields):
 
 
 # =========================================================
+# UNAUTHORIZED LOGIN ALERT
+# =========================================================
+
+def create_login_failure_alert(username):
+
+    """Create website notifications and send email alerts
+    to active admin/authorized users when a login fails.
+    """
+
+    ip_address = request.headers.get("X-Forwarded-For", request.remote_addr)
+    user_agent = request.headers.get("User-Agent", "Unknown")
+
+    conn = get_db()
+
+    try:
+        # -------------------------------------------------
+        # SAVE SECURITY ALERT
+        # -------------------------------------------------
+        conn.execute("""
+            INSERT INTO security_alerts
+            (username, action, ip_address, description)
+            VALUES (?, ?, ?, ?)
+        """, (
+            username or "Unknown",
+            "FAILED_LOGIN",
+            ip_address or "Unknown",
+            f"Failed login attempt for username '{username or 'Unknown'}'. User-Agent: {user_agent}"
+        ))
+
+        # -------------------------------------------------
+        # FIND ACTIVE AUTHORIZED RECIPIENTS
+        # -------------------------------------------------
+        recipients = conn.execute("""
+            SELECT id, username, full_name, email, role
+            FROM users
+            WHERE is_active = 1
+            AND role IN ('admin', 'authorized')
+            AND email IS NOT NULL
+            AND TRIM(email) != ''
+        """).fetchall()
+
+        # -------------------------------------------------
+        # CHECK NOTIFICATION RECIPIENT COLUMN
+        # Supports both user_id and authorized_user_id schemas.
+        # -------------------------------------------------
+        notification_columns = {
+            row["name"]
+            for row in conn.execute("PRAGMA table_info(security_notifications)").fetchall()
+        }
+
+        recipient_column = None
+
+        if "user_id" in notification_columns:
+            recipient_column = "user_id"
+        elif "authorized_user_id" in notification_columns:
+            recipient_column = "authorized_user_id"
+
+        # -------------------------------------------------
+        # WEBSITE NOTIFICATION
+        # -------------------------------------------------
+        if recipient_column:
+            for recipient in recipients:
+                conn.execute(
+                    f"""
+                    INSERT INTO security_notifications
+                    ({recipient_column}, title, message, notification_type, is_read)
+                    VALUES (?, ?, ?, ?, 0)
+                    """,
+                    (
+                        recipient["id"],
+                        "Unauthorized Login Attempt",
+                        f"A failed login attempt was detected for username '{username or 'Unknown'}' from IP {ip_address or 'Unknown'}.'",
+                        "security"
+                    )
+                )
+
+        conn.commit()
+
+        # -------------------------------------------------
+        # EMAIL NOTIFICATION
+        # -------------------------------------------------
+        email_body = f"""
+Security Alert
+
+A failed login attempt was detected in the medical records system.
+
+Username: {username or 'Unknown'}
+IP Address: {ip_address or 'Unknown'}
+Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+If this activity was not expected, please review the security alerts page.
+
+Medical Records System
+"""
+
+        for recipient in recipients:
+            try:
+                send_resend_email(
+                    recipient["email"],
+                    "Security Alert - Failed Login Attempt",
+                    email_body
+                )
+            except Exception as email_error:
+                print(
+                    "Security alert email failed for",
+                    recipient["email"],
+                    ":",
+                    email_error
+                )
+
+    except Exception as error:
+        conn.rollback()
+        print("Unable to create unauthorized login alert:", error)
+
+    finally:
+        conn.close()
+
+
+# =========================================================
 # LOGIN
 # =========================================================
 
@@ -245,7 +443,10 @@ def login():
         password = request.form.get(
             "password",
             ""
-        )
+        ).strip()
+
+        print("\n>>> LOGIN POST REQUEST RECEIVED <<<")
+        print("Username entered:", username)
 
         if not username or not password:
 
@@ -258,43 +459,186 @@ def login():
                 "login.html"
             )
 
-        success, user = login_user(
+        # -------------------------------------------------
+        # AUTHENTICATE USER
+        # -------------------------------------------------
+
+        user_result = login_user(
             username,
             password
         )
 
-        if success:
+        # login_user() in the current auth module returns
+        # (success, user). This handling also safely supports
+        # a direct user object/dict if the auth module changes.
 
-            # Generate 6-digit OTP
-            otp = f"{secrets.randbelow(1000000):06d}"
+        success = False
+        user = None
 
-            # Store OTP securely as SHA-256 hash
-            otp_hash = hashlib.sha256(
-                otp.encode()
-            ).hexdigest()
+        if isinstance(user_result, tuple):
 
-            # Store pending login information
-            session["otp_user_id"] = user["id"]
-            session["otp_username"] = user["username"]
-            session["otp_hash"] = otp_hash
-            session["otp_created_at"] = time.time()
-            session["otp_attempts"] = 0
+            if len(user_result) >= 2:
+                success = bool(user_result[0])
+                user = user_result[1]
 
-            # Send OTP to registered email
-            email = user["email"]
+        elif isinstance(user_result, dict):
 
-            if email:
-                try:
-                    sender = os.getenv("MAIL_SENDER")
-                    password_mail = os.getenv("MAIL_PASSWORD")
+            user = user_result
+            success = True
 
-                    message = MIMEMultipart()
-                    message["From"] = sender
-                    message["To"] = email
-                    message["Subject"] = "Login Verification Code"
+        elif hasattr(user_result, "keys"):
 
-                    body = f"""
-Hello {user["full_name"]},
+            user = user_result
+            success = True
+
+        else:
+
+            success = bool(user_result)
+
+        # -------------------------------------------------
+        # INVALID LOGIN
+        # -------------------------------------------------
+
+        if not success or user is None:
+
+            print(">>> LOGIN FAILED <<<")
+
+            # Record the unauthorized attempt, create website
+            # notifications for authorized users, and send email alerts.
+            create_login_failure_alert(username)
+
+            flash(
+                "Invalid username or password.",
+                "danger"
+            )
+
+            return render_template(
+                "login.html"
+            )
+
+        print(">>> LOGIN PASSWORD VERIFIED <<<")
+
+        # -------------------------------------------------
+        # GET USER ID
+        # -------------------------------------------------
+
+        if isinstance(user, dict):
+
+            user_id = user.get("id")
+
+        elif hasattr(user, "keys"):
+
+            user_id = user["id"]
+
+        else:
+
+            try:
+                user_id = user["id"]
+            except (TypeError, KeyError, IndexError):
+                user_id = None
+
+        print("User ID:", user_id)
+
+        if not user_id:
+
+            print(">>> USER ID NOT FOUND <<<")
+
+            flash(
+                "Unable to identify user account.",
+                "danger"
+            )
+
+            return render_template(
+                "login.html"
+            )
+
+        # -------------------------------------------------
+        # FETCH FRESH USER DATA
+        # -------------------------------------------------
+
+        conn = get_db()
+
+        database_user = conn.execute("""
+            SELECT
+                id,
+                username,
+                full_name,
+                email,
+                role,
+                is_active
+            FROM users
+            WHERE id = ?
+        """, (
+            user_id,
+        )).fetchone()
+
+        conn.close()
+
+        if database_user is None:
+
+            print(">>> USER NOT FOUND IN DATABASE <<<")
+
+            flash(
+                "User account not found.",
+                "danger"
+            )
+
+            return render_template(
+                "login.html"
+            )
+
+        if not database_user["is_active"]:
+
+            flash(
+                "This user account is inactive.",
+                "danger"
+            )
+
+            return render_template(
+                "login.html"
+            )
+
+        user_email = database_user["email"]
+
+        print("User email:", user_email)
+
+        if not user_email:
+
+            flash(
+                "No registered email found for this account.",
+                "danger"
+            )
+
+            return render_template(
+                "login.html"
+            )
+
+        # -------------------------------------------------
+        # GENERATE OTP
+        # -------------------------------------------------
+
+        otp = f"{secrets.randbelow(1000000):06d}"
+
+        otp_hash = hashlib.sha256(
+            otp.encode("utf-8")
+        ).hexdigest()
+
+        session["otp_user_id"] = database_user["id"]
+        session["otp_username"] = database_user["username"]
+        session["otp_hash"] = otp_hash
+        session["otp_created_at"] = time.time()
+        session["otp_attempts"] = 0
+
+        print(">>> OTP GENERATED <<<")
+        print("OTP:", otp)
+
+        full_name = (
+            database_user["full_name"]
+            or database_user["username"]
+        )
+
+        body = f"""
+Hello {full_name},
 
 Your login verification code is:
 
@@ -302,80 +646,62 @@ Your login verification code is:
 
 This OTP is valid for 5 minutes.
 
-If you did not attempt to log in, please contact the administrator.
+If you did not attempt to log in,
+please contact the administrator.
 
 Regards,
 Medical Records System
 """
 
-                    message.attach(
-                        MIMEText(body, "plain")
-                    )
+        # -------------------------------------------------
+        # SEND OTP EMAIL
+        # -------------------------------------------------
 
-                    server = smtplib.SMTP(
-                        "smtp.gmail.com",
-                        587
-                    )
+        try:
 
-                    server.starttls()
+            send_resend_email(
+                user_email,
+                "Login Verification Code",
+                body
+            )
 
-                    server.login(
-                        sender,
-                        password_mail
-                    )
-
-                    server.sendmail(
-                        sender,
-                        email,
-                        message.as_string()
-                    )
-
-                    server.quit()
-
-                    flash(
-                        "Verification code sent to your registered email.",
-                        "success"
-                    )
-
-                    return redirect(
-                        url_for("verify_otp")
-                    )
-
-                except Exception as e:
-
-                    print(
-                        "OTP email error:",
-                        e
-                    )
-
-                    session.pop("otp_user_id", None)
-                    session.pop("otp_username", None)
-                    session.pop("otp_hash", None)
-                    session.pop("otp_created_at", None)
-                    session.pop("otp_attempts", None)
-
-                    flash(
-                        "Unable to send verification code.",
-                        "danger"
-                    )
-
-            else:
-
-                flash(
-                    "No registered email found for this account.",
-                    "danger"
-                )
-
-        else:
+            print(">>> OTP EMAIL SENT <<<")
 
             flash(
-                "Invalid username or password.",
+                "Verification code sent to your registered email.",
+                "success"
+            )
+
+            return redirect(
+                url_for("verify_otp")
+            )
+
+        except Exception as error:
+
+            print()
+            print(">>> OTP EMAIL FAILED <<<")
+            print("Error:", error)
+            print("==============================================")
+
+            session.pop("otp_user_id", None)
+            session.pop("otp_username", None)
+            session.pop("otp_hash", None)
+            session.pop("otp_created_at", None)
+            session.pop("otp_attempts", None)
+
+            flash(
+                "Unable to send verification code. Check the server terminal.",
                 "danger"
+            )
+
+            return render_template(
+                "login.html"
             )
 
     return render_template(
         "login.html"
     )
+
 
 @app.route("/verify-otp", methods=["GET", "POST"])
 def verify_otp():
@@ -554,15 +880,6 @@ def resend_otp():
 
     try:
 
-        sender = os.getenv("MAIL_SENDER")
-        password_mail = os.getenv("MAIL_PASSWORD")
-
-        message = MIMEMultipart()
-
-        message["From"] = sender
-        message["To"] = user["email"]
-        message["Subject"] = "New Login Verification Code"
-
         body = f"""
 Hello {user["full_name"]},
 
@@ -576,29 +893,11 @@ Regards,
 Medical Records System
 """
 
-        message.attach(
-            MIMEText(body, "plain")
-        )
-
-        server = smtplib.SMTP(
-            "smtp.gmail.com",
-            587
-        )
-
-        server.starttls()
-
-        server.login(
-            sender,
-            password_mail
-        )
-
-        server.sendmail(
-            sender,
+        send_resend_email(
             user["email"],
-            message.as_string()
+            "New Login Verification Code",
+            body
         )
-
-        server.quit()
 
         flash(
             "A new verification code has been sent to your email.",
